@@ -1,0 +1,23 @@
+hash: 8da6cc220cb3d2f133d86aab6f771ac6ab1c1223aff01f3c52966e7163408bd6
+updated: 2016-11-14T14:13:01.054469082+03:00
+imports:
+- name: github.com/andybalholm/cascadia
+  version: 1c31af6f6c1a7b101ed05aacc7d8a738b43ae86e
+- name: github.com/k0kubun/pp
+  version: f5dce6ed0ccf6c350f1679964ff6b61f3d6d2033
+- name: github.com/mattn/go-colorable
+  version: ed8eb9e318d7a84ce5915b495b7d35e0cfe7b5a8
+- name: github.com/mattn/go-isatty
+  version: 66b8e73f3f5cda9f96b69efd03dd3d7fc4a5cdb8
+- name: github.com/PuerkitoBio/goquery
+  version: 152b1a2c8f5d0340f658bb656032a39b94e52958
+- name: golang.org/x/net
+  version: f09c4662a0bd6bd8943ac7b4931e185df9471da4
+  subpackages:
+  - html
+  - html/atom
+- name: golang.org/x/sys
+  version: 8f0908ab3b2457e2e15403d3697c9ef5cb4b57a9
+  subpackages:
+  - unix
+testImports: []

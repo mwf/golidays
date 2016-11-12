@@ -1,0 +1,34 @@
+!web/*.go
+web/web
+web/goblin
+dev*.ini
+test.ini
+Godeps/_workspace/*
+/vendor/
+
+# Sublime project files
+*sublime*
+
+# IDEA
+.project
+.idea
+*.iml
+.realsync*
+
+# The Silver Searcher
+.agignore
+
+# Node modules
+node_modules/
+
+# generated static
+static/pub/
+static/sed/
+views/desktop/components/
+views/desktop/pm-widgets/
+
+# Mac
+.DS_Store
+
+# freeze eslint config
+-/.eslintrc

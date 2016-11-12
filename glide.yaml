@@ -1,0 +1,3 @@
+package: github.com/mwf/golidays/crawler
+import:
+- package: github.com/PuerkitoBio/goquery
