@@ -34,6 +34,8 @@ var (
 
 type ConsultantRu struct{}
 
+var _ Crawler = &ConsultantRu{}
+
 func NewConsultantRu() *ConsultantRu {
 	return &ConsultantRu{}
 }

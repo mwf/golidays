@@ -6,5 +6,5 @@ import (
 
 // Crawler is an interface for parsing holidays from different websites
 type Crawler interface {
-	ScrapeYear() (model.Holidays, error)
+	ScrapeYear(year int) (model.Holidays, error)
 }

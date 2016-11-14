@@ -8,7 +8,15 @@ import (
 
 // Store is an interface for storing an getting holidays
 type Store interface {
-	Set(holidays model.Holidays) error
+	HolidaySetter
+	HolidayGetter
+}
+
+type HolidayGetter interface {
 	Get(date time.Time) (model.Holiday, bool, error)
 	GetRange(from, to time.Time) (model.Holidays, error)
+}
+
+type HolidaySetter interface {
+	Set(holidays model.Holidays) error
 }

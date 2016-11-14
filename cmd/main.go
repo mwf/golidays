@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"github.com/k0kubun/pp"
 
-	"github.com/mwf/golidays/crawlers"
+	"github.com/mwf/golidays/crawler"
 )
 
 func main() {
-	crawler := crawlers.NewConsultantRu()
+	crawler := crawler.NewConsultantRu()
 	holidays, err := crawler.ScrapeYear(2016)
 	fmt.Printf("err: %#v", err)
 	pp.Print(holidays)

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/mwf/golidays/model"
-	"github.com/mwf/golidays/store"
+	"github.com/mwf/golidays/service/store"
 )
 
 // Store is a simple in-memory storage
@@ -16,7 +16,7 @@ type Store struct {
 }
 
 // check if Store implements Store interface
-var _ = store.Store(New())
+var _ store.Store = New()
 
 func New() *Store {
 	return &Store{
