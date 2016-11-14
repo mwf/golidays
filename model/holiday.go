@@ -18,7 +18,7 @@ type Holiday struct {
 	Type HolidayType `json:"type"`
 }
 
-type Holidays []*Holiday
+type Holidays []Holiday
 
 type HolidaysByDate Holidays
 
