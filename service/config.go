@@ -10,12 +10,24 @@ import (
 	"github.com/mwf/golidays/service/store/memory"
 )
 
+const (
+	defaultUpdatePeriod = 24 * time.Hour
+	defaultBackupPeriod = 7 * 24 * time.Hour
+	defaulMaxBackups    = 4
+)
+
 // Config is a service configuration data struct
 type Config struct {
 	Updater struct {
 		Disabled bool
 		Period   time.Duration
 		Crawler  crawler.Crawler
+	}
+	Backuper struct {
+		Disabled   bool
+		BasePath   string
+		Period     time.Duration
+		MaxBackups int
 	}
 	Storage store.Store
 	Logger  logger.Logger
@@ -25,6 +37,13 @@ type Config struct {
 func (c *Config) Defaultize() {
 	if c.Updater.Period == 0 {
 		c.Updater.Period = defaultUpdatePeriod
+	}
+
+	if c.Backuper.Period == 0 {
+		c.Backuper.Period = defaultBackupPeriod
+	}
+	if c.Backuper.MaxBackups == 0 {
+		c.Backuper.MaxBackups = defaulMaxBackups
 	}
 
 	if c.Storage == nil {
@@ -39,7 +58,11 @@ func (c *Config) Defaultize() {
 // Validate checks current config
 func (c *Config) Validate() error {
 	if !c.Updater.Disabled && c.Updater.Crawler == nil {
-		return fmt.Errorf("config.Updater.Crawler can't be nil")
+		return fmt.Errorf("config.Updater.Crawler is nil")
+	}
+
+	if !c.Backuper.Disabled && c.Backuper.BasePath == "" {
+		return fmt.Errorf("config.Backuper.BasePath is empty")
 	}
 
 	return nil

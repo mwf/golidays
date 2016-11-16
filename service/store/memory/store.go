@@ -91,3 +91,16 @@ func (s *Store) Dump() model.Holidays {
 
 	return holidays
 }
+
+// Restore purges all items and sets provided
+func (s *Store) Restore(holidays model.Holidays) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	s.byDate = make(map[time.Time]*model.Holiday)
+	for i, holiday := range holidays {
+		s.byDate[holiday.Date] = &holidays[i]
+	}
+
+	return nil
+}

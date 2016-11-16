@@ -17,8 +17,7 @@ import (
 
 const (
 	// no reason to keep it higher
-	minBackupPeriod     = time.Minute
-	defaultBackupPeriod = 24 * time.Hour
+	minPeriod = time.Minute
 )
 
 type Backuper struct {
@@ -33,10 +32,10 @@ type Backuper struct {
 	done    chan struct{}
 }
 
-// NewBackuper returns new backuper instance
-func NewBackuper(storage store.Store, period time.Duration, basePath string, maxBackups int, log logger.Logger) (*Backuper, error) {
-	if period < minBackupPeriod {
-		return nil, fmt.Errorf("period is too low: %s < %s", period, minBackupPeriod)
+// New returns new backuper instance
+func New(storage store.Store, period time.Duration, basePath string, maxBackups int, log logger.Logger) (*Backuper, error) {
+	if period < minPeriod {
+		return nil, fmt.Errorf("period is too low: %s < %s", period, minPeriod)
 	}
 	if maxBackups < 0 {
 		return nil, fmt.Errorf("too few backups: %d", maxBackups)
@@ -127,7 +126,8 @@ func (b *Backuper) restoreList() {
 }
 
 func (b *Backuper) loop() {
-	b.logger.Debugf("started %s", b)
+	b.logger.Infof("%s started", b)
+	defer b.logger.Infof("%s stopped", b)
 
 	for {
 		select {

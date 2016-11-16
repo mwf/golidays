@@ -12,8 +12,7 @@ import (
 
 const (
 	// no reason to keep it higher
-	minUpdatePeriod     = time.Minute
-	defaultUpdatePeriod = 24 * time.Hour
+	minUpdatePeriod = time.Minute
 )
 
 // Updater performs periodic holiday updates in storage for current year
@@ -62,7 +61,8 @@ func (u *Updater) Stop() {
 }
 
 func (u *Updater) loop() {
-	u.logger.Debugf("started %s", u)
+	u.logger.Infof("%s started", u)
+	defer u.logger.Infof("%s stopped", u)
 
 	for {
 		select {
