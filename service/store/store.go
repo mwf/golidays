@@ -10,8 +10,7 @@ import (
 type Store interface {
 	HolidaySetter
 	HolidayGetter
-	// Dump returns all items in store
-	Dump() model.Holidays
+	HolidayDumper
 }
 
 type HolidayGetter interface {
@@ -21,4 +20,9 @@ type HolidayGetter interface {
 
 type HolidaySetter interface {
 	Set(holidays model.Holidays) error
+}
+
+type HolidayDumper interface {
+	// Dump returns all items in store
+	Dump() model.Holidays
 }

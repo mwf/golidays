@@ -1,9 +1,9 @@
-package service
+package backuper
 
 import (
-	"container/list"
 	"fmt"
 	"github.com/mwf/golidays/model"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sort"
@@ -20,38 +20,6 @@ const (
 	minBackupPeriod     = time.Minute
 	defaultBackupPeriod = 24 * time.Hour
 )
-
-type stringStack struct {
-	list   *list.List
-	maxLen int
-}
-
-func newStringStack(maxLen int) *stringStack {
-	return &stringStack{
-		list:   list.New(),
-		maxLen: maxLen,
-	}
-}
-
-// Put adds string to stack. Returns popped item if maxLen is exceeded
-func (s *stringStack) Put(str string) (string, bool) {
-	s.list.PushBack(str)
-	if s.list.Len() > s.maxLen {
-		popped := s.list.Remove(s.list.Front())
-		return popped.(string), true
-	}
-
-	return "", false
-}
-
-// Head returns last-added string
-func (s *stringStack) Head() string {
-	last := s.list.Back()
-	if last == nil {
-		return ""
-	}
-	return last.Value.(string)
-}
 
 type Backuper struct {
 	storage store.Store
@@ -70,6 +38,9 @@ func NewBackuper(storage store.Store, period time.Duration, basePath string, max
 	if period < minBackupPeriod {
 		return nil, fmt.Errorf("period is too low: %s < %s", period, minBackupPeriod)
 	}
+	if maxBackups < 0 {
+		return nil, fmt.Errorf("too few backups: %d", maxBackups)
+	}
 
 	info, err := os.Stat(basePath)
 	if err != nil {
@@ -79,14 +50,17 @@ func NewBackuper(storage store.Store, period time.Duration, basePath string, max
 		return nil, fmt.Errorf("'%s' is not a directory", basePath)
 	}
 
-	return &Backuper{
+	b := &Backuper{
 		storage:  storage,
 		period:   period,
 		logger:   log,
 		basePath: basePath,
 		files:    newStringStack(maxBackups),
 		done:     make(chan struct{}),
-	}, nil
+	}
+
+	b.restoreList()
+	return b, nil
 }
 
 func (b *Backuper) String() string {
@@ -106,6 +80,50 @@ func (b *Backuper) Stop() {
 	b.runOnce.Do(func() {
 		close(b.done)
 	})
+}
+
+// RestoreStorage restores storage from the last backup
+func (b *Backuper) RestoreStorage() error {
+	lastBackupPath := b.files.Head()
+	if lastBackupPath == "" {
+		return fmt.Errorf("no backup files")
+	}
+	b.logger.Debugf("restoring last backup from '%s'", lastBackupPath)
+
+	bytes, err := ioutil.ReadFile(lastBackupPath)
+	if err != nil {
+		return fmt.Errorf("error reading backup '%s': %s", lastBackupPath, err)
+	}
+
+	return b.restoreData(bytes)
+}
+
+func (b *Backuper) restoreData(bytes []byte) error {
+	holidays := make(model.Holidays, 0)
+	if err := yaml.Unmarshal(bytes, holidays); err != nil {
+		return fmt.Errorf("error unmarshaling data: %s", err)
+	}
+
+	if err := b.storage.Set(holidays); err != nil {
+		return fmt.Errorf("error restoring storage: %s", err)
+	}
+	return nil
+}
+
+func (b *Backuper) restoreList() {
+	// try to restore backup list
+	pattern := filepath.Join(b.basePath, "holidays.*\\.yml")
+	matches, err := filepath.Glob(pattern)
+	if err != nil {
+		b.logger.Warningf("backups list restore failed: %s", err)
+	}
+
+	b.logger.Infof("matches: %s", matches)
+	// TODO: sort
+
+	for _, fpath := range matches {
+		b.preserveFile(fpath)
+	}
 }
 
 func (b *Backuper) loop() {
