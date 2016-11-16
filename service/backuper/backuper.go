@@ -94,12 +94,17 @@ func (b *Backuper) RestoreStorage() error {
 		return fmt.Errorf("error reading backup '%s': %s", lastBackupPath, err)
 	}
 
-	return b.restoreData(bytes)
+	if err := b.restoreData(bytes); err != nil {
+		return err
+	}
+
+	b.logger.Infof("backup '%s' restored OK", lastBackupPath)
+	return nil
 }
 
 func (b *Backuper) restoreData(bytes []byte) error {
 	holidays := make(model.Holidays, 0)
-	if err := yaml.Unmarshal(bytes, holidays); err != nil {
+	if err := yaml.Unmarshal(bytes, &holidays); err != nil {
 		return fmt.Errorf("error unmarshaling data: %s", err)
 	}
 
@@ -117,8 +122,8 @@ func (b *Backuper) restoreList() {
 		b.logger.Warningf("backups list restore failed: %s", err)
 	}
 
-	b.logger.Infof("matches: %s", matches)
-	// TODO: sort
+	b.logger.Debugf("found backups: %s", matches)
+	sort.Strings(matches)
 
 	for _, fpath := range matches {
 		b.preserveFile(fpath)

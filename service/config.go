@@ -18,19 +18,23 @@ const (
 
 // Config is a service configuration data struct
 type Config struct {
-	Updater struct {
-		Disabled bool
-		Period   time.Duration
-		Crawler  crawler.Crawler
-	}
-	Backuper struct {
-		Disabled   bool
-		BasePath   string
-		Period     time.Duration
-		MaxBackups int
-	}
-	Storage store.Store
-	Logger  logger.Logger
+	Updater  UpdaterConfig
+	Backuper BackuperConfig
+	Storage  store.Store
+	Logger   logger.Logger
+}
+
+type UpdaterConfig struct {
+	Disabled bool
+	Period   time.Duration
+	Crawler  crawler.Crawler
+}
+
+type BackuperConfig struct {
+	Disabled   bool
+	BasePath   string
+	Period     time.Duration
+	MaxBackups int
 }
 
 // Defaultize sets default values for some config values
