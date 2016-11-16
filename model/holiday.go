@@ -14,8 +14,8 @@ const (
 )
 
 type Holiday struct {
-	Date time.Time   `json:"date"`
-	Type HolidayType `json:"type"`
+	Date time.Time   `json:"date" yaml:"date"`
+	Type HolidayType `json:"type" yaml:"type"`
 }
 
 type Holidays []Holiday

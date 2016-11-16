@@ -13,6 +13,8 @@ import (
 type Service interface {
 	// Run starts periodic jobs
 	Run() error
+	// Stop stops all periodic jobs
+	Stop()
 	// Getters from Store interface
 	store.HolidayGetter
 }
@@ -51,6 +53,12 @@ func (s *service) Run() error {
 		s.updater.Run()
 	}
 	return nil
+}
+
+func (s *service) Stop() {
+	if s.updater != nil {
+		s.updater.Stop()
+	}
 }
 
 func (s *service) Get(date time.Time) (model.Holiday, bool, error) {

@@ -16,7 +16,7 @@ const (
 	defaultUpdatePeriod = 24 * time.Hour
 )
 
-// Updater performs periodic updates of holidays in storage
+// Updater performs periodic holiday updates in storage for current year
 type Updater struct {
 	storage store.Store
 	crawler crawler.Crawler

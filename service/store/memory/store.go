@@ -78,3 +78,16 @@ func (s *Store) getRangeNaive(from, to time.Time) (model.Holidays, error) {
 
 	return holidays, nil
 }
+
+// Dump returns all holidays from store in random order
+func (s *Store) Dump() model.Holidays {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	holidays := make(model.Holidays, 0, len(s.byDate))
+	for _, h := range s.byDate {
+		holidays = append(holidays, *h)
+	}
+
+	return holidays
+}
