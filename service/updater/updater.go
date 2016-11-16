@@ -1,4 +1,4 @@
-package service
+package updater
 
 import (
 	"fmt"
@@ -26,8 +26,8 @@ type Updater struct {
 	done    chan struct{}
 }
 
-// NewUpdater returns new updater instance
-func NewUpdater(storage store.Store, crawler crawler.Crawler, period time.Duration, log logger.Logger) (*Updater, error) {
+// New returns new updater instance
+func New(storage store.Store, crawler crawler.Crawler, period time.Duration, log logger.Logger) (*Updater, error) {
 	if period < minUpdatePeriod {
 		return nil, fmt.Errorf("period is too low: %s < %s", period, minUpdatePeriod)
 	}

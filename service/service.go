@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"github.com/mwf/golidays/service/updater"
 	"time"
 
 	"github.com/mwf/golidays/model"
@@ -26,13 +27,13 @@ type Service interface {
 
 // service is a simple Service interface implementation
 type service struct {
-	updater  *Updater
+	updater  *updater.Updater
 	backuper *backuper.Backuper
 	storage  store.Store
 	log      logger.Logger
 }
 
-func NewService(config *Config) (Service, error) {
+func New(config *Config) (Service, error) {
 	config.Defaultize()
 	if err := config.Validate(); err != nil {
 		return nil, err
@@ -44,7 +45,7 @@ func NewService(config *Config) (Service, error) {
 	}
 
 	if !config.Updater.Disabled {
-		updater, err := NewUpdater(config.Storage, config.Updater.Crawler, config.Updater.Period, s.log)
+		updater, err := updater.New(config.Storage, config.Updater.Crawler, config.Updater.Period, s.log)
 		if err != nil {
 			return nil, err
 		}

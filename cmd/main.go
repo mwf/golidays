@@ -43,7 +43,7 @@ func main() {
 		Logger:  logger,
 	}
 
-	srv, err := service.NewService(config)
+	srv, err := service.New(config)
 	if err != nil {
 		logger.Warnf("error initializing service: %s", err)
 		os.Exit(1)
