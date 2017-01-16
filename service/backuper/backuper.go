@@ -173,7 +173,7 @@ func (b *Backuper) perform() error {
 }
 
 func (b *Backuper) generateBackupName() string {
-	dt := time.Now().Format("2006-01-02T03:04")
+	dt := time.Now().Format("2006-01-02T13:04")
 	return fmt.Sprintf("holidays.%s.yml", dt)
 }
 
