@@ -38,10 +38,11 @@ func (s *Store) Set(holidays model.Holidays) error {
 
 // Get finds holiday by date and returns it.
 // If nothing found - returned bool value is false
-func (s *Store) Get(date time.Time) (model.Holiday, bool, error) {
+func (s *Store) Get(day time.Time) (model.Holiday, bool, error) {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 
+	date := model.NewDay(day.Date())
 	if holiday, ok := s.byDate[date]; ok {
 		return *holiday, ok, nil
 	}
@@ -51,7 +52,10 @@ func (s *Store) Get(date time.Time) (model.Holiday, bool, error) {
 
 // GetRange returns holidays between 'from' and 'to' dates
 func (s *Store) GetRange(from, to time.Time) (model.Holidays, error) {
-	return s.getRangeNaive(from, to)
+	dateFrom := model.NewDay(from.Date())
+	dateTo := model.NewDay(to.Date())
+
+	return s.getRangeNaive(dateFrom, dateTo)
 }
 
 // Naive implementation - simply range over all dates in range

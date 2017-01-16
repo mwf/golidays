@@ -70,7 +70,7 @@ func (c *ConsultantRu) ScrapeYear(year int) (model.Holidays, error) {
 			}
 
 			holiday := model.Holiday{
-				Date: time.Date(year, time.Month(monthN), int(day), 0, 0, 0, 0, time.UTC),
+				Date: model.NewDay(year, time.Month(monthN), int(day)),
 			}
 			switch {
 			case s.HasClass("weekend"):

@@ -108,7 +108,7 @@ func (b *Backuper) restoreData(bytes []byte) error {
 		return fmt.Errorf("error unmarshaling data: %s", err)
 	}
 
-	if err := b.storage.Set(holidays); err != nil {
+	if err := b.storage.Restore(holidays); err != nil {
 		return fmt.Errorf("error restoring storage: %s", err)
 	}
 	return nil

@@ -25,3 +25,8 @@ type HolidaysByDate Holidays
 func (h HolidaysByDate) Len() int           { return len(h) }
 func (h HolidaysByDate) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 func (h HolidaysByDate) Less(i, j int) bool { return h[i].Date.Before(h[j].Date) }
+
+// NewDay returns time.Time instance, representing day
+func NewDay(year int, month time.Month, day int) time.Time {
+	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+}
