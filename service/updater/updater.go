@@ -64,6 +64,8 @@ func (u *Updater) loop() {
 	u.logger.Infof("%s started", u)
 	defer u.logger.Infof("%s stopped", u)
 
+	// perform initial update on start
+	u.perform()
 	for {
 		select {
 		case <-time.After(u.period):
