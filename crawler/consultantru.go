@@ -96,39 +96,29 @@ func (c *ConsultantRu) ScrapeYear(year int) (model.Holidays, error) {
 }
 
 func (c *ConsultantRu) getMonthTablesOrdered(doc *goquery.Document) (months []*goquery.Selection, err error) {
-	// Find the quarter tables
-	quarters := doc.Find(".calendar-table > tbody > tr:has(.quarter-title)")
-
 	foundMonths := make([]string, 0, 12)
-	quarters.Each(func(quarterN int, s *goquery.Selection) {
+	doc.Find("div.row > div.col-md-3 > table.cal").Each(func(monthN int, s *goquery.Selection) {
+		// check if every month is parsed
 		if err != nil {
 			return
 		}
 
-		s.Find(".month-block > table").Each(func(monthN int, s *goquery.Selection) {
-			// check if every month is parsed
-			if err != nil {
-				return
-			}
+		month := strings.ToLower(s.Find("th.month").Text())
+		monthNumber, ok := ruMonths[month]
+		if !ok {
+			err = fmt.Errorf("month %q does not exist", month)
+			return
+		}
 
-			month := strings.ToLower(s.Find("th.month").Text())
-			monthNumber, ok := ruMonths[month]
-			if !ok {
-				err = fmt.Errorf("month '%s' does not exist", month)
-				return
-			}
+		parsedMonthN := (monthN + 1)
+		if monthNumber != parsedMonthN {
+			err = fmt.Errorf("month %q out of order - #%d, must be #%d", month, parsedMonthN, monthNumber)
+			return
+		}
 
-			parsedMonthN := (3*quarterN + monthN + 1)
-			if monthNumber != parsedMonthN {
-				err = fmt.Errorf("month '%s' out of order - #%d, must be #%d", month, parsedMonthN, monthNumber)
-				return
-			}
-
-			months = append(months, s)
-			foundMonths = append(foundMonths, month)
-		})
+		months = append(months, s)
+		foundMonths = append(foundMonths, month)
 	})
-
 	if err != nil {
 		return nil, err
 	}
