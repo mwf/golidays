@@ -84,7 +84,12 @@ func (u *Updater) perform() {
 		u.logger.Infof("perform finished in %s", time.Now().Sub(startedAt))
 	}()
 
-	h, err := u.crawler.ScrapeYear(startedAt.Year())
+	year := startedAt.Year()
+	if startedAt.Month() >= time.November {
+		// start scraping next year in november
+		year += 1
+	}
+	h, err := u.crawler.ScrapeYear(year)
 	if err != nil {
 		u.logger.Errorf("crawler.ScrapeYear error: %s", err)
 		return
