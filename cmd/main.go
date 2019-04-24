@@ -5,10 +5,10 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/mwf/golidays/crawler"
 	"github.com/mwf/golidays/service"
 	"github.com/mwf/golidays/service/store/memory"
+	"github.com/sirupsen/logrus"
 )
 
 func waitInterrupt() {
