@@ -1,4 +1,5 @@
-/vendor/
+*vendor/
+*var/
 
 # Sublime project files
 *sublime*
